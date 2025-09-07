@@ -1,28 +1,20 @@
 #include <stdio.h>
 
-#define MAX 10
-
-void readMatrix(int p, int q, int r, int mat[MAX][MAX][MAX], int num) {
-    int i, j, k;
-    printf("Enter elements of matrix %d (%dx%dx%d):\n", num, p, q, r);
-    for(i = 0; i < p; i++) {
-        for(j = 0; j < q; j++) {
-            for(k = 0; k < r; k++) {
-                printf("Element [%d][%d][%d]: ", i, j, k);
+// Functions for 3D matrix operations
+void read_3d(int mat[][5][5], int p, int q, int r) {
+    printf("Enter elements:\n");
+    for (int i = 0; i < p; i++)
+        for (int j = 0; j < q; j++)
+            for (int k = 0; k < r; k++)
                 scanf("%d", &mat[i][j][k]);
-            }
-        }
-    }
 }
 
-void displayMatrix(int p, int q, int r, int mat[MAX][MAX][MAX]) {
-    int i, j, k;
-    printf("Matrix elements:\n");
-    for(i = 0; i < p; i++) {
-        printf("Slice %d:\n", i);
-        for(j = 0; j < q; j++) {
-            for(k = 0; k < r; k++) {
-                printf("%d ", mat[i][j][k]);
+void display_3d(int mat[][5][5], int p, int q, int r) {
+    for (int i = 0; i < p; i++) {
+        printf("Slice %d:\n", i + 1);
+        for (int j = 0; j < q; j++) {
+            for (int k = 0; k < r; k++) {
+                printf("%d\t", mat[i][j][k]);
             }
             printf("\n");
         }
@@ -30,104 +22,60 @@ void displayMatrix(int p, int q, int r, int mat[MAX][MAX][MAX]) {
     }
 }
 
-void sumMatrices(int p, int q, int r, int mat1[MAX][MAX][MAX], int mat2[MAX][MAX][MAX], int sum[MAX][MAX][MAX]) {
-    int i, j, k;
-    for(i = 0; i < p; i++) {
-        for(j = 0; j < q; j++) {
-            for(k = 0; k < r; k++) {
-                sum[i][j][k] = mat1[i][j][k] + mat2[i][j][k];
-            }
-        }
-    }
+void sum_3d(int m1[][5][5], int m2[][5][5], int sum[][5][5], int p, int q, int r) {
+    for (int i = 0; i < p; i++)
+        for (int j = 0; j < q; j++)
+            for (int k = 0; k < r; k++)
+                sum[i][j][k] = m1[i][j][k] + m2[i][j][k];
 }
 
-void transposeMatrix(int p, int q, int r, int mat[MAX][MAX][MAX], int trans[MAX][MAX][MAX]) {
-    // Transpose each 2D slice along p dimension (swap rows and columns)
-    int i, j, k;
-    for(i = 0; i < p; i++) {
-        for(j = 0; j < q; j++) {
-            for(k = 0; k < r; k++) {
-                // We transpose the q and r dimensions: trans[i][k][j] = mat[i][j][k]
-                trans[i][k][j] = mat[i][j][k];
-            }
-        }
-    }
+void product_3d(int m1[][5][5], int m2[][5][5], int prod[][5][5], int p, int q, int r) {
+     for (int i = 0; i < p; i++)
+        for (int j = 0; j < q; j++)
+            for (int k = 0; k < r; k++)
+                prod[i][j][k] = m1[i][j][k] * m2[i][j][k];
 }
 
-void multiplyMatrices(int p, int q, int r, int mat1[MAX][MAX][MAX], int mat2[MAX][MAX][MAX], int prod[MAX][MAX][MAX]) {
-    int i, j, k;
-    for(i = 0; i < p; i++) {
-        for(j = 0; j < q; j++) {
-            for(k = 0; k < r; k++) {
-                prod[i][j][k] = mat1[i][j][k] * mat2[i][j][k];
-            }
-        }
-    }
-}
 
 int main() {
-    int p, q, r;
-    int mat1[MAX][MAX][MAX], mat2[MAX][MAX][MAX];
-    int sum[MAX][MAX][MAX], trans[MAX][MAX][MAX], prod[MAX][MAX][MAX];
-    int choice;
+    int mat1[5][5][5], mat2[5][5][5], res[5][5][5];
+    int p, q, r, choice;
 
-    printf("Enter dimensions p, q, r (max 10): ");
-    scanf("%d%d%d", &p, &q, &r);
+    printf("Enter dimensions (p q r, max 5x5x5): ");
+    scanf("%d %d %d", &p, &q, &r);
 
     do {
-        printf("\nMenu:\n");
-        printf("1. Read matrices\n");
-        printf("2. Display matrices\n");
-        printf("3. Sum of matrices\n");
-        printf("4. Transpose of matrices\n");
-        printf("5. Product of matrices\n");
-        printf("6. Exit\n");
+        printf("\n---MENU---\n");
+        printf("1. Read matrices\n2. Display matrices\n");
+        printf("3. Sum of matrices\n4. Product (element-wise)\n");
+        printf("5. Transpose (not implemented)\n6. Exit\n");
         printf("Enter your choice: ");
         scanf("%d", &choice);
 
-        switch(choice) {
+        switch (choice) {
             case 1:
-                readMatrix(p, q, r, mat1, 1);
-                readMatrix(p, q, r, mat2, 2);
+                printf("Enter Matrix 1:\n"); read_3d(mat1, p, q, r);
+                printf("Enter Matrix 2:\n"); read_3d(mat2, p, q, r);
                 break;
-
             case 2:
-                printf("Matrix 1:\n");
-                displayMatrix(p, q, r, mat1);
-                printf("Matrix 2:\n");
-                displayMatrix(p, q, r, mat2);
+                printf("--- Matrix 1 ---\n"); display_3d(mat1, p, q, r);
+                printf("--- Matrix 2 ---\n"); display_3d(mat2, p, q, r);
                 break;
-
             case 3:
-                sumMatrices(p, q, r, mat1, mat2, sum);
-                printf("Sum of matrices:\n");
-                displayMatrix(p, q, r, sum);
+                sum_3d(mat1, mat2, res, p, q, r);
+                printf("--- Sum Matrix ---\n"); display_3d(res, p, q, r);
                 break;
-
             case 4:
-                transposeMatrix(p, q, r, mat1, trans);
-                printf("Transpose of Matrix 1:\n");
-                displayMatrix(p, r, q, trans);  // note swapped q and r for display
-
-                transposeMatrix(p, q, r, mat2, trans);
-                printf("Transpose of Matrix 2:\n");
-                displayMatrix(p, r, q, trans);
+                product_3d(mat1, mat2, res, p, q, r);
+                printf("--- Product Matrix ---\n"); display_3d(res, p, q, r);
                 break;
-
             case 5:
-                multiplyMatrices(p, q, r, mat1, mat2, prod);
-                printf("Product of matrices:\n");
-                displayMatrix(p, q, r, prod);
+                 printf("Transpose for 3D matrices is not a standard operation.\n");
                 break;
-
-            case 6:
-                printf("Exiting...\n");
-                break;
-
-            default:
-                printf("Invalid choice. Try again.\n");
+            case 6: break;
+            default: printf("Invalid choice!\n");
         }
-    } while(choice != 6);
+    } while (choice != 6);
 
     return 0;
 }
